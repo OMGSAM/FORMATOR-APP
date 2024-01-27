@@ -1,0 +1,228 @@
+import tkinter as tk
+from tkinter import ttk
+import json
+
+# Classe Formateur: represente les informations 
+class IR :
+    def __init__(self,taux,tranches) :
+        self.taux=taux
+        self.tranches=tranches
+    def getIR(salaire) :
+        a=salaire*12
+        if a<30000 :
+            return 0/100
+        if a>30001 and a<50000 : 
+            return 10/100
+         if a>50001 and a<60000 :
+            return 20/100
+         if a>60001 and a<80000 :
+            return 30/100
+         if a>80001 and a<180000 :
+            return 34/100
+         else :
+            return 38/100
+    
+class Iemploye :
+    
+    
+    def age(self)
+            pass
+    def anciennete(self)
+            pass
+    def ageretraite(self)
+            pass
+    
+
+class employe() :
+    mtle=0
+    def __init__(self,nom,datembauche,datenaisance,salaire) :
+        self._nom=nom  
+        self._salaire= salaire
+        self._datenaisance= datenaisance
+        self._datembauche= datembauche
+        employe.mtle+=1
+
+    def getnom(self) :
+         return    self._nom
+    def getsalary(self) :
+         return    self._salaire    
+    def getbirthday(self) :
+         return   self._datenaisance
+    def getpri(self) :
+         return    self._datembauche  
+    def setbirthday(self,l) :
+             self._datenaisance=l
+    def setembauche(self,n) :
+              self._datembauche=n     
+         
+          
+   def equals(self,m) :
+        if self.mtle== m.mtle :
+               return True
+        else :
+              return False
+   def __str__(self):
+         return self.__dict__
+         
+    
+    
+    
+class formateur(employe) : 
+    mtle=0
+    tarif=0
+    def __init__(self,nom,datembauche,datenaisance,salaire,heuresup) :
+        super().__init__(nom,datembauche,datenaisance,salaire)
+        self._heuresup=heuresup
+        formateur.mtle+=1
+        formateur.tarif=70DH
+
+        
+    def getsup(self) :
+         return  self._heuresup
+    def setheure(self,w) :
+          self._heuresup=w
+
+    
+
+    def getnbrmtle(self) :
+       return formateur.mtle
+
+     
+    def tostring(self):
+         return self.__dict__
+         
+class agent(employe) :  
+    mtle=0
+    def __init__(self,nom,datembauche,datenaisance,salaire,prime) :
+        super().__init__(nom,datembauche,datenaisance,salaire)
+        self._prime=prime
+        agent.mtle+=1
+        
+
+    def equals(self,m) :
+        if self.mtle== m.mtle :
+               return True
+        else :
+              return False
+
+    def getprime(self) :
+         return self._prime    
+    
+
+    def setprime(self ,z) :
+        self._prime =z
+    
+    def getnbrmtle(self) :
+        return agent.mtle
+     
+    def tostring(self):
+         return self.__dict__   
+         
+class Formateur:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Formateur  App")
+
+        # Initialize account number to 0
+        self.account_number = tk.IntVar(value=0)
+        self.NOM = tk.StringVar()
+        self.AGE = tk.StringVar()
+        self.account_type = tk.StringVar(value="MALE")
+        self.SALAIRE = tk.StringVar()
+        self.overdraft = tk.StringVar()
+
+        self.setup_accounts_table()
+        self.load_accounts()
+        self.setup_ui_elements()
+
+    def setup_accounts_table(self):
+        self.accounts_table = ttk.Treeview(self.root, columns=("number", "NOM", "AGE", "type", "interest", "overdraft"), show="headings")
+        self.accounts_table.grid(row=7, column=0, columnspan=2)
+        self.accounts_table.heading("number", text="#")
+        self.accounts_table.heading("NOM", text="Propriétaire")
+        self.accounts_table.heading("AGE", text="AGE")
+        self.accounts_table.heading("type", text="Type")
+        self.accounts_table.heading("SALAIRE", text="SALAIRE")
+        self.accounts_table.heading("DATEEMBAUCHE", text="DATEEMBAUCHE")
+
+    def setup_ui_elements(self):
+        tk.Label(self.root, text="Numéro:").grid(row=0, column=0, sticky="e")
+        tk.Entry(self.root, textvariable=self.account_number, state='readonly').grid(row=0, column=1)
+
+        tk.Label(self.root, text="Propriétaire:").grid(row=1, column=0, sticky="e")
+        tk.Entry(self.root, textvariable=self.NOM).grid(row=1, column=1)
+
+        tk.Label(self.root, text="AGE:").grid(row=2, column=0, sticky="e")
+        tk.Entry(self.root, textvariable=self.AGE).grid(row=2, column=1)
+
+        tk.Label(self.root, text="Type:").grid(row=3, column=0, sticky="e")
+        tk.Radiobutton(self.root, text="MALE", variable=self.account_type, value="MALE").grid(row=3, column=1, sticky="w")
+        tk.Radiobutton(self.root, text="FEMALE", variable=self.account_type, value="FEMALE").grid(row=3, column=1)
+
+        tk.Label(self.root, text="SALAIRE:").grid(row=4, column=0, sticky="e")
+        tk.Entry(self.root, textvariable=self.SALAIRE).grid(row=4, column=1)
+
+        tk.Label(self.root, text="DATEEMBAUCHE:").grid(row=5, column=0, sticky="e")
+        tk.Entry(self.root, textvariable=self.DATEEMBAUCHE).grid(row=5, column=1)
+
+        tk.Button(self.root, text="Créer Compte", command=self.create_account).grid(row=6, column=1, pady=10)
+
+    def load_accounts(self):
+        try:
+            with open("accounts.json", "r") as file:
+                accounts = json.load(file)
+                max_account_number = 0
+                for account in accounts:
+                    if isinstance(account, dict):
+                        self.accounts_table.insert("", "end", values=(
+                            account.get("numero", ""),
+                            account.get("NOM", ""),
+                            account.get("AGE", ""),
+                            account.get("type", ""),
+                            account.get("SALAIRE", ""),
+                            account.get("DATEEMBAUCHE", "")
+                        ))
+                        max_account_number = max(max_account_number, account.get("numero", 0))
+                self.account_number.set(max_account_number + 1)
+        except FileNotFoundError:
+            pass
+
+    def create_account(self):
+        account_type = self.account_type.get()
+        account = {
+            "numero": self.account_number.get(),
+            "NOM": self.NOM.get(),
+            "AGE": self.AGE.get(),
+            "type": account_type,
+            "SALAIRE": self.SALAIRE.get(),
+            "DATEEMBAUCHE": self.DATEEMBAUCHE.get(),
+        }
+        self.accounts_table.insert("", "end", values=(
+            account["numero"],
+            account["NOM"],
+            account["AGE"],
+            account["type"],
+            account["SALAIRE"],
+            account["DATEEMBAUCHE"]
+        ))
+        self.save_accounts(account)
+        # Increment the account number for the next account
+        self.account_number.set(self.account_number.get() + 1)
+
+    def save_accounts(self, account):
+        try:
+            with open("accounts.json", "r") as file:
+                accounts = json.load(file)
+        except FileNotFoundError:
+            accounts = []
+
+        accounts.append(account)
+
+        with open("accounts.json", "w") as file:
+            json.dump(accounts, file, indent=4)
+
+# Exécution de l'application
+root = tk.Tk()
+root.geometry("800x600")
+app = BankAccountApp(root)
+root.mainloop()
